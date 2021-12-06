@@ -21,7 +21,7 @@ use yii\bootstrap4\ActiveForm;
     ],
 ]); ?>
 
-<?= $form->field($model, 'type')->dropDownList(['contact' => 'Форма 1', 'descriptive' => 'Форма 2'], ['prompt'=>'Выберите форму']);  ?>
+<?= $form->field($model, 'type')->dropDownList(['descriptive' => 'Форма 1', 'contact' => 'Форма 2'], ['prompt'=>'Выберите форму']);  ?>
 <div class="form-field-first" style="display: none;">
     <?= $form->field($model, 'company_name')->input('text')  ?>
     <?= $form->field($model, 'position')->input('text')  ?>
@@ -74,19 +74,28 @@ use yii\bootstrap4\ActiveForm;
 
 
 <div class="form-group form-field-first" style="display: none;">
-
-    <?= $form->field($model, 'datePostAt')->widget(DatePicker::class, [
+    <?= $form->field($model, 'datePostAt')->widget(
+        buibr\datepicker\DatePicker::class, [
         'language' => 'ru',
-        'options' => [
-            'class'=> 'form-control',
-            'autocomplete'=>'off',
-            'format' => 'dd.mm.yyyy'
-        ],
+        'addon' => false,
+        'size' => 'sm',
         'clientOptions' => [
-            'changeMonth' => true,
-            'changeYear' => true,
-            'yearRange' => '2021:2050',
-        ]])->label('Дата размещения') ?>
+            'format' => 'L LT',
+            'stepping' => 5,
+        ],
+    ]);?>
+<!--    --><?//= $form->field($model, 'datePostAt')->widget(DatePicker::class, [
+//        'language' => 'ru',
+//        'options' => [
+//            'class'=> 'form-control',
+//            'autocomplete'=>'off',
+//            'format' => 'dd.mm.yyyy'
+//        ],
+//        'clientOptions' => [
+//            'changeMonth' => true,
+//            'changeYear' => true,
+//            'yearRange' => '2021:2050',
+//        ]])->label('Дата размещения') ?>
 
     <div class="col-md-5 col-md-offset-2">
         <?= Html::submitButton('Разместить', ['class' =>'btn btn-dark']) ?>

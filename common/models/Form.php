@@ -32,6 +32,7 @@ class Form extends ActiveRecord
     public $dateStart;
     public $dateEnd;
     public $datePostAt;
+
     /**
      * @var mixed|null
      */
@@ -49,13 +50,13 @@ class Form extends ActiveRecord
     {
         return [
             [['type', 'company_name', 'position'], 'required'/*, 'on' => self::SCENARIO_CONTACT*/],
-            [['dateEnd'], 'required', 'when' => function($model) {
+            [['dateEnd'], 'required', 'when' => function ($model) {
                 return $model->type == 'descriptive';
             }, 'whenClient' => "function (attribute, value) {
                          return $('#type').val() == 'descriptive';
                 }", 'skipOnEmpty' => false],
 
-            [['contact_email'], 'required', 'when' => function($model) {
+            [['contact_email'], 'required', 'when' => function ($model) {
                 return $model->type == 'contact';
             }, 'whenClient' => "function (attribute, value) {
                          return $('#type').val() == 'contact';
@@ -65,17 +66,17 @@ class Form extends ActiveRecord
             [['company_name', 'position'], 'string', 'max' => 128/*, 'on' => self::SCENARIO_CONTACT*/],
 
             [['contact_name', 'contact_email'], 'string', 'max' => 256],
-            [['contact_email'], 'email', 'when' => function($model) {
+            [['contact_email'], 'email', 'when' => function ($model) {
                 return $model->type == 'contact';
             }, 'whenClient' => "function (attribute, value) {
                          return $('#type').val() == 'contact';
-                }",'message' => 'Неверный электронный адрес'],
+                }", 'message' => 'Неверный электронный адрес'],
 
             [['salary'], 'integer'],
             [['position_description'], 'string', 'max' => 128],
 
 
-            ['dateStart', 'date', 'format' => 'php:d.m.Y', 'max' => date('d.m.Y'), 'when' => function($model) {
+            ['dateStart', 'date', 'format' => 'php:d.m.Y', 'max' => date('d.m.Y'), 'when' => function ($model) {
                 return $model->type == 'descriptive';
             }, 'whenClient' => "function (attribute, value) {
                          return $('#type').val() == 'descriptive';
@@ -85,14 +86,14 @@ class Form extends ActiveRecord
 
             ['dateEnd', 'date', 'format' => 'php:d.m.Y'], //формат модели с которой будем работать
 
-            ['dateEnd', 'validDateEnd', 'when' => function($model) {
+            ['dateEnd', 'validDateEnd', 'when' => function ($model) {
                 return $model->dateStart != '' && $model->type == 'descriptive';
             }, 'whenClient' => "function (attribute, value) {
                          return $('#form-datestart').val() != '' && $('#type').val() == 'descriptive';
                 }", 'skipOnError' => false],
 
-            [['datePostAt'], 'date', 'format' => 'php:d.m.Y', 'min' => date('d.m.Y', strtotime('+0 day'))],
-            [['datePostAt'], 'default', 'value' => date('d.m.Y')],
+            [['datePostAt'], 'date', 'format' => 'php:d.m.Y H:i', 'min' => date('d.m.Y H:i')],
+            [['datePostAt'], 'default', 'value' => date('d.m.Y H:i')],
 
         ];
     }
@@ -117,10 +118,11 @@ class Form extends ActiveRecord
     }
 
 
-    public function validDateEnd($attribute, $params) {
-        $minDateEnd = (isset($this->dateStart)) ? strtotime($this->dateStart.'+3 month') : strtotime('+3 month');
+    public function validDateEnd($attribute, $params)
+    {
+        $minDateEnd = (isset($this->dateStart)) ? strtotime($this->dateStart . '+3 month') : strtotime('+3 month');
         $dateEnd = strtotime($this->dateEnd);
-        if($dateEnd < $minDateEnd) {
+        if ($dateEnd < $minDateEnd) {
             $this->addError($attribute, 'Минимальная дата окончания - ' . date('d.m.Y', $minDateEnd));
         }
     }
@@ -164,11 +166,10 @@ class Form extends ActiveRecord
         return parent::beforeSave($insert);
     }
 
-    public function afterSave($insert, $changedAttributes) {
-//        parent::afterSave($insert, $changedAttributes);
+    public function afterSave($insert, $changedAttributes)
+    {
         if ($insert) {
-            if($this->type === 'contact')
-            {
+            if ($this->type === 'contact') {
                 $contact_post = new ContactPost();
                 $contact_post->post_id = $this->id;
                 $contact_post->contact_name = $this->contact_name;
@@ -193,32 +194,26 @@ class Form extends ActiveRecord
         }
     }
 
-
-    public function sendMail($id) {
-
+    public function sendMail($id)
+    {
         $sender = Form::find()->with('postsQueues')->with('descriptivePost')->with('contactPost')->where('id = :id', [':id' => $id])->limit(1)->one();
-        $email = User::find()->select(['email'])->where('username = :username', [':username' => 'admin'])->asArray()->one();
-        $admin_email = $email['email'];
+        $email = \common\models\Admin::find()->orderBy(['id' => SORT_DESC])->one();
+        $admin_email = $email->admin_email;
         // Set layout params
         \Yii::$app->mailer->getView()->params['CompanyName'] = $sender->company_name;
-
         $result = \Yii::$app->mailer->compose(
-            'views/contact-html', ['sender' => $sender])->setTo([$admin_email => $sender->company_name])
-            ->setSubject('Задание для размещения')
+            'views/contact-html', ['sender' => $sender])->setTo($admin_email)
+            ->setSubject('Данные из очереди')
             ->send();
-
         // Reset layout params
         \Yii::$app->mailer->getView()->params['CompanyName'] = null;
-
         if ($result) {
             $notification = PostsQueue::find()->where('post_id = :post_id', [':post_id' => $id])->limit(1)->one();
             $notification->notification_sent_at = 1;
             $notification->save();
         }
-
         return $result;
     }
-
 
 
 }

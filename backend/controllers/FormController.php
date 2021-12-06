@@ -55,22 +55,6 @@ class FormController extends Controller
         }
     }
 
-    public function actionSend()
-    {
-
-        \Yii::$app->mailer->compose()
-            ->setFrom('kaktuasan777@gmail.com')
-            ->setReplyTo('kaktuasan777@gmail.com')
-            ->setTo('to@domain.com')
-            ->setSubject('Message subject')
-            ->setTextBody('Plain text content')
-            ->setHtmlBody('<b>HTML content</b>')
-            ->send();
-
-
-
-return 'sfhsfdhhsshdsf';
-    }
 
 
     public function actionIndex()
@@ -78,7 +62,10 @@ return 'sfhsfdhhsshdsf';
         $model = new Form();
 
 
+
+
         $model->load(Yii::$app->request->post());
+
 
 
         if (Yii::$app->request->isAjax) {
@@ -99,23 +86,43 @@ return 'sfhsfdhhsshdsf';
                 $model->datePostAt = $post_model['datePostAt'];
                 //добавление оконченно
                 $this->_transaction = Yii::$app->db->beginTransaction();
+//                Yii::$app->mailer->compose('views/contact-html')
+//                    ->setSubject('test subject')
+//                    ->setFrom('kaktuasan777@gmail.com')
+//                    ->setHtmlBody('views/contact-html')
+//                    ->setTo('kaktuasan777@gmail.com')
+//                    ->send();
+
+
                 $model->save();
+                if($model->save()){
+                    $id = $model->id;
+                    $sender = Form::find()->with('postsQueues')->with('descriptivePost')->with('contactPost')->where('id = :id', [':id' => $id])->limit(1)->one();
+//                $email = User::find()->select(['email'])->where('username = :username', [':username' => 'admin'])->asArray()->one();
+
+                    // Set layout params
+                    Yii::$app->mailer->getView()->params['CompanyName'] = $sender->company_name;
+                    $email = \common\models\Admin::find()->orderBy(['id' => SORT_DESC])->one();
+                    $admin_email = $email->admin_email;
+                    Yii::$app->mailer->compose(
+                        'views/preview-html', ['sender' => $sender])->setTo($admin_email)
+                        ->setSubject('Создано задание для размещения')->send();
+                }
+
                 $exception = Yii::$app->errorHandler->exception;
                 if ($exception !== null) {
                     $this->_transaction->rollBack();
                 } else {
+
                     $this->_transaction->commit();
-                    Yii::$app->session->setFlash('success', 'Данные успешно отправлены');
+
+                    Yii::$app->session->setFlash('success', 'Данные успешно сохранены и отправлены на почту '. $admin_email);
                 }
-                if ($model->datePostAt === date('d.m.Y')) {
+
+                if ($model->datePostAt === date('d.m.Y H:i')) {
                     Yii::$app->queue->push(new SendEmail([
                         'post_id' => $model->id,
                     ]));
-//                    $res = $model->sendMail($model->id);
-//                    if ($res) {
-//
-//                        Yii::$app->session->setFlash('success', 'Данные успешно сохранены и отправлены на почту');
-//                    }
                 } else {
                     $delaySend = strtotime($model->datePostAt) - strtotime('now');
                     Yii::$app->queue->delay($delaySend)->push(new SendEmail([
@@ -127,7 +134,7 @@ return 'sfhsfdhhsshdsf';
                 $model = new Form();
             } else {
                 Yii::$app->session->setFlash('danger', 'Данные не отправлены');
-                var_dump($model->getErrors());
+              echo $model->getErrors();
                 return ActiveForm::validate($model);
             }
 

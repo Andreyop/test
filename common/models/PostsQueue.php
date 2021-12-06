@@ -60,7 +60,7 @@ class PostsQueue extends \yii\db\ActiveRecord
     }
     public function getDatePostAt()
     {
-        return $this->post_at ? date('d.m.Y', $this->post_at) : '';
+        return $this->post_at ? date('d.m.Y H:i', $this->post_at) : '';
     }
 
     public function setDatePostAt($date)

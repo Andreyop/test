@@ -17,8 +17,6 @@ use yii\helpers\Html;
     <body>
     <?php $this->beginBody() ?>
 
-    <h4>Здравствуйте <?= $this->params['userName'] ?></h4>
-
     <?= $content ?>
 
     <?php $this->endBody() ?>

@@ -46,25 +46,20 @@ AppAsset::register($this);
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
             <a class="nav-link" href="<?php echo \yii\helpers\Url::to(['/form/index']) ?>">
-                                <i class="fas fa-fw fa-list"></i>
+                <i class="fas fa-fw fa-list"></i>
                 <span>Форма</span></a>
         </li>
-
 
         <!-- Divider -->
         <hr class="sidebar-divider">
 
-
-        <!-- Nav Item - Charts -->
-<!--        <li class="nav-item">-->
-<!--            <a class="nav-link" href="--><?php //echo \yii\helpers\Url::to(['/post/index']) ?><!--">-->
-<!--                <i class="fas fa-fw fa-list"></i>-->
-<!--                <span>Posts</span>-->
-<!--            </a>-->
-<!--        </li>-->
-
-
-
+        <!--         Nav Item - Charts-->
+        <!--        <li class="nav-item">-->
+        <!--            <a class="nav-link" href="--><?php //echo \yii\helpers\Url::to(['/admin/index']) ?><!--">-->
+        <!--                <i class="fas fa-fw fa-list"></i>-->
+        <!--                <span>admin</span>-->
+        <!--            </a>-->
+        <!--        </li>-->
         <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block">
 
@@ -91,6 +86,18 @@ AppAsset::register($this);
                     <i class="fa fa-bars"></i>
                 </button>
 
+                <? $email = \common\models\Admin::find()->orderBy(['id' => SORT_DESC])->one(); ?>
+                <? if (!empty($email)) {
+
+                    echo '<div class="px-md-2">' . "Email администратора: " . "&nbsp;" . "<b> $email->admin_email</b> " . '</div>' .
+                        Html::a(Yii::t('app', 'Изменить email'), [\yii\helpers\Url::to(['/create'])], ['class' => 'btn btn-info btn-sm']);
+                } else {
+                    echo
+                    '<div class="px-md-2"><span class="badge badge-pill badge-danger">Email администратора не указан!</span></div>'.
+                     Html::a(Yii::t('app', 'Указать email'), [\yii\helpers\Url::to(['/create'])], ['class' => 'btn btn-danger btn-sm']);
+
+                } ?>
+
                 <!-- Topbar Navbar -->
                 <ul class="navbar-nav ml-auto">
 
@@ -98,28 +105,27 @@ AppAsset::register($this);
                     <li class="nav-item dropdown no-arrow">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-<!--                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">-->
-
-                                <?php NavBar::begin();
-                                if (Yii::$app->user->isGuest) {
-                                    $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
-                                } else {
-                                    $menuItems[] = '<li>'
-                                        . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
-                                        . Html::submitButton(
-                                            'Logout (' . Yii::$app->user->identity->username . ')',
-                                            ['class' => 'btn btn-gray']
-                                        )
-                                        . Html::endForm()
-                                        . '</li>';
-                                }
-                                echo Nav::widget([
-                                    'options' => ['class' => 'navbar-nav'],
-                                    'items' => $menuItems,
-                                ]);
-                                NavBar::end();
-                                ?>
-<!--                            </span>-->
+                            <!--                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">-->
+                            <?php NavBar::begin();
+                            if (Yii::$app->user->isGuest) {
+                                $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+                            } else {
+                                $menuItems[] = '<li>'
+                                    . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
+                                    . Html::submitButton(
+                                        'Logout (' . Yii::$app->user->identity->username . ')',
+                                        ['class' => 'btn btn-gray']
+                                    )
+                                    . Html::endForm()
+                                    . '</li>';
+                            }
+                            echo Nav::widget([
+                                'options' => ['class' => 'navbar-nav'],
+                                'items' => $menuItems,
+                            ]);
+                            NavBar::end();
+                            ?>
+                            <!--                            </span>-->
                             <img class="img-profile rounded-circle"
                                  src="/backend/web/img/undraw_profile_2.svg"
                         </a>
@@ -152,23 +158,7 @@ AppAsset::register($this);
             </div>
 
         </div>
-        <!-- End of Main Content -->
 
-        <!-- Footer -->
-        <!--        <footer class="sticky-footer bg-gradient-dark">-->
-        <!--            <div class="container my-auto">-->
-        <!--                <div class="row copyright">-->
-        <!--                    <div class="col">-->
-        <!--                        &copy; Po-polam --><?//= date('Y') ?>
-        <!--                    </div>-->
-        <!---->
-        <!--                    <div class="col text-right">-->
-        <!--                        Po-polam-->
-        <!--                    </div>-->
-        <!--                </div>-->
-        <!--            </div>-->
-        <!--        </footer>-->
-        <!-- End of Footer -->
 
     </div>
     <!-- End of Content Wrapper -->

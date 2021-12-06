@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "08b433a70389db0b3643f545cada40ea",
+    "content-hash": "b28b8b911ba56f27b13f4f546e904646",
     "packages": [
         {
             "name": "bower-asset/inputmask",
@@ -381,6 +381,48 @@
             ]
         },
         {
+            "name": "oleg-chulakov-studio/yii2-queue-mailer",
+            "version": "1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/OlegChulakovStudio/yii2-queue-mailer.git",
+                "reference": "61976735d1f63555cbd1c2ccecd19fa620c15bc5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/OlegChulakovStudio/yii2-queue-mailer/zipball/61976735d1f63555cbd1c2ccecd19fa620c15bc5",
+                "reference": "61976735d1f63555cbd1c2ccecd19fa620c15bc5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6.0",
+                "yiisoft/yii2": "~2.0.13",
+                "yiisoft/yii2-queue": "^2.0"
+            },
+            "type": "yii2-components",
+            "autoload": {
+                "psr-4": {
+                    "chulakov\\queuemailer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Chulakov Studio",
+                    "email": "hello@chulakov.ru"
+                }
+            ],
+            "description": "Mailer with send message via queue.",
+            "support": {
+                "issues": "https://github.com/OlegChulakovStudio/yii2-queue-mailer/issues",
+                "source": "https://github.com/OlegChulakovStudio/yii2-queue-mailer/tree/1.0.5"
+            },
+            "time": "2020-09-18T11:45:34+00:00"
+        },
+        {
             "name": "paragonie/random_compat",
             "version": "v9.99.100",
             "source": {
@@ -529,6 +571,60 @@
                 "source": "https://github.com/php-fig/log/tree/1.1.4"
             },
             "time": "2021-05-03T11:20:27+00:00"
+        },
+        {
+            "name": "shaqman/yii2-queue-mailer",
+            "version": "0.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/shaqman/yii2-queue-mailer.git",
+                "reference": "b6860e04e674fcc7da7b7af0547b57d5dc188b78"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/shaqman/yii2-queue-mailer/zipball/b6860e04e674fcc7da7b7af0547b57d5dc188b78",
+                "reference": "b6860e04e674fcc7da7b7af0547b57d5dc188b78",
+                "shasum": ""
+            },
+            "require": {
+                "yiisoft/yii2": "~2.0.13",
+                "yiisoft/yii2-queue": "^2.0"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "shaqman\\mailer\\queuemailer\\": "./src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alexey Samoylov",
+                    "email": "alexey.samoylov@gmail.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Syakur Rahman",
+                    "email": "shaqman2004@yahoo.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Background mailer decorator for Yii2",
+            "homepage": "https://github.com/shaqman/yii2-queue-mailer",
+            "keywords": [
+                "background",
+                "mailer",
+                "queue",
+                "yii2"
+            ],
+            "support": {
+                "issues": "https://github.com/shaqman/yii2-queue-mailer/issues",
+                "source": "https://github.com/shaqman/yii2-queue-mailer"
+            },
+            "time": "2018-03-11T08:30:53+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
